@@ -139,5 +139,3 @@ Built with ❤️ for developers, students, and database enthusiasts.
 ## 📜 License
 
 MIT License © 2025 — Feel free to fork, improve, and innovate!
-
-```
