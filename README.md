@@ -1,91 +1,134 @@
-# ⚡ AutoER: SQL DDL to ERD Minimalist Visualizer
-
-AutoER is a modern, minimalist web tool designed for developers and database architects to quickly visualize SQL Data Definition Language (DDL) into an Entity-Relationship Diagram (ERD). It features a sleek, high-contrast dark/light theme, instant rendering, and an AI integration for rapid schema prototyping.
-
-## ✨ Features
-
-* **Instant Visualization:** Converts `CREATE TABLE` statements into a live, interactive **Mermaid ERD** as you type.
-* **AI DDL Generation:** Integrated feature to generate complex SQL schemas instantly from a plain-text scenario description using the **Gemini API**.
-* **Minimalist Aesthetic:** Clean, modern UI with a high-contrast **Dark/Light Mode** toggle.
-* **Customizable Diagram:** Supports multiple Mermaid themes (`Dark`, `Default`, `Forest`, `Neutral`) and includes a **Zoom Slider** for detailed inspection.
-* **Export:** Easily download the generated diagram as a **PNG** image.
-* **Local Persistence:** Automatically saves your last entered SQL DDL in your browser's local storage.
-
----
-
-## 🚀 Getting Started
-
-AutoER is a single-file application requiring no build steps.
-
-### Prerequisites
-
-* A modern web browser.
-* For the **AI Generation** feature, you **must** run the file using a **local web server** (e.g., VS Code Live Server, Python's `http.server`) to avoid Cross-Origin Resource Sharing (CORS) errors when calling the Gemini API.
-
-### Installation & Setup
-
-1.  **Save the file:** Save the entire provided code as a single HTML file (e.g., `index.html`).
-2.  **Add API Key (Optional):** To enable AI DDL generation, open the HTML file and locate the following line in the main `<script>` block:
-
-    ```javascript
-    const GEMINI_API_KEY = ''; // <-- PASTE YOUR KEY HERE
-    ```
-    Replace the empty string with your actual Google Gemini API key.
-3.  **Run Locally:** Launch your local web server and navigate to `index.html`.
+# ⚡ AutoER — Instant SQL → ERD Visualizer  
+> Transform your SQL schemas into beautiful, interactive ER diagrams — in real time.
+<p align="center">
+  <a href="https://github.com/zanesense/AutoER/stargazers">
+    <img src="https://img.shields.io/github/stars/zanesense/AutoER?color=22d3ee&style=for-the-badge" alt="GitHub Stars">
+  </a>
+  <a href="https://github.com/zanesense/AutoER/issues">
+    <img src="https://img.shields.io/github/issues/zanesense/AutoER?color=facc15&style=for-the-badge" alt="GitHub Issues">
+  </a>
+  <a href="https://github.com/zanesense/AutoER/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/zanesense/AutoER?color=4ade80&style=for-the-badge" alt="License">
+  </a>
+  <a href="https://github.com/zanesense/AutoER/fork">
+    <img src="https://img.shields.io/github/forks/zanesense/AutoER?color=06b6d4&style=for-the-badge" alt="Forks">
+  </a>
+  <a href="#">
+    <img src="https://img.shields.io/badge/Made%20with-HTML%20%7C%20Tailwind%20%7C%20JS-1e293b?style=for-the-badge&logo=javascript" alt="Tech Stack">
+  </a>
+</p>
 
 ---
 
-## 🛠️ How to Use
+## 🚀 Overview
 
-### 1. DDL Input
+**AutoER** is a minimalist, AI-enhanced tool that converts **SQL DDL** statements into **Entity-Relationship Diagrams (ERDs)** instantly.  
+Whether you paste SQL, upload a `.sql` file, or describe your database in plain English — AutoER builds your ERD in seconds.
 
-* **Type or Paste:** Enter your PostgreSQL, MySQL, or generic SQL `CREATE TABLE` statements into the **SQL DDL Source** textarea.
-* **Import:** Use the **Import .sql** button to load a schema file from your local machine.
-* **Instant Render:** The diagram updates automatically, typically within 500 milliseconds of your last change.
-
-### 2. AI DDL Generation
-
-1.  Click the **Generate DDL (AI)** button.
-2.  In the modal, provide a detailed description of the database requirements (e.g., "A social media schema with users, posts, comments, and a likes many-to-many table.").
-3.  Click **Generate DDL**. The resulting SQL will replace the content in the input box and automatically render the ERD.
-
-### 3. Diagram Interaction
-
-* **Zoom:** Use the **Zoom Slider** to pan in and out of complex diagrams. The diagram area is fully scrollable in all directions.
-* **Theme:** Use the **ERD Theme** dropdown to change the visual style of the diagram itself (`dark`, `default`, `forest`, `neutral`).
-* **Export:** Click **Export PNG** to save the visualization as a high-resolution image.
+No setup. No backend. 100% client-side and lightning fast ⚡
 
 ---
 
-## 🎨 Theme Customization
+## ✨ Key Features
 
-The application supports two distinct UI themes and saves your preference automatically:
-
-| Mode | Accent Color | Main Background | Card Background |
-| :--- | :--- | :--- | :--- |
-| **Dark** | Cyan-400 (`#22d3ee`) | Slate-900 (`#0f172a`) | Slate-800 (`#1e293b`) |
-| **Light** | Cyan-400 (`#22d3ee`) | Sky-50 (`#f8fafc`) | White (`#ffffff`) |
-
-Toggle the theme using the switch in the upper-right corner of the header.
-
----
-
-## ⚙️ Technology Stack
-
-* **Frontend:** Vanilla HTML, CSS (Tailwind CSS CDN)
-* **Visualization:** [Mermaid.js](https://mermaid.js.org/) (for generating SVG diagrams)
-* **AI Integration:** [Google Gemini API](https://ai.google.dev/) (using `gemini-2.5-flash`)
-* **Export:** [html-to-image](https://www.npmjs.com/package/html-to-image)
+- 🧠 **AI DDL Generator** — Describe your database idea, and AutoER generates SQL automatically (Gemini API)
+- ⚙️ **Real-Time ERD Rendering** — Watch your diagram update as you type  
+- 🌓 **Dark / Light Mode** — Seamless minimalist themes  
+- 🌲 **Custom Mermaid Themes** — Dark, Default, Forest, and Neutral  
+- 📦 **SQL Import** — Upload `.sql` files instantly  
+- 🔍 **Zoom Controls** — Smooth scaling for complex diagrams  
+- 🖼️ **Export as PNG** — Download your ER diagram in one click  
+- 💾 **Local Persistence** — Your last SQL and theme are auto-saved  
 
 ---
 
-## 🔗 Connect
+## 🧩 Built With
 
-*If you've enjoyed using AutoER or have suggestions, feel free to connect!*
+| Technology | Purpose |
+|-------------|----------|
+| **HTML5 / JS (ES6 Modules)** | Core app logic |
+| **Tailwind CSS** | Clean, responsive UI |
+| **Mermaid.js** | ER diagram rendering |
+| **html-to-image** | PNG export |
+| **Google Gemini API (optional)** | AI-powered DDL generation |
 
+---
 
+## 🛠️ Setup & Run Locally
 
-| Platform | Link |
-| :--- | :--- |
-| **GitHub** | `https://github.com/zanesense` |
-| **LinkedIn** | `https://linkedin.com/in/saaimaly` |
+### 1️⃣ Clone the Repository
+```bash
+git clone https://github.com/zanesense/AutoER.git
+cd AutoER
+````
+
+### 2️⃣ Start a Local Server
+
+If you’re on Windows, simply double-click:
+
+```
+start.bat
+```
+
+Or run manually:
+
+```bash
+python -m http.server 8000
+```
+
+Then open your browser and visit:
+
+```
+http://localhost:8000
+```
+
+---
+
+## 🔑 AI Setup (Optional)
+
+To enable **AI DDL generation**:
+
+1. Get a **Gemini API Key** from [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Open `index.html`
+3. Find this line:
+
+   ```js
+   const GEMINI_API_KEY = 'YOUR_API_KEY_HERE';
+   ```
+4. Replace it with your actual key.
+
+---
+
+## 💡 Example Usage
+
+Paste SQL like this:
+
+```sql
+CREATE TABLE Customers (
+  customer_id INT PRIMARY KEY,
+  name VARCHAR(50),
+  email VARCHAR(100) UNIQUE
+);
+
+CREATE TABLE Orders (
+  order_id INT PRIMARY KEY,
+  customer_id INT,
+  total DECIMAL(10,2),
+  FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)
+);
+```
+
+✅ Instantly see the ER diagram appear!
+
+---
+
+## 🧑‍💻 Author
+
+**Developed by [@zanesense](https://github.com/zanesense)**
+Built with ❤️ for developers, students, and database enthusiasts.
+
+---
+
+## 📜 License
+
+MIT License © 2025 — Feel free to fork, improve, and innovate!
