@@ -1,5 +1,6 @@
 # ⚡ AutoER — Instant SQL → ERD Visualizer  
 > Transform your SQL schemas into beautiful, interactive ER diagrams — in real time.
+
 <p align="center">
   <a href="https://github.com/zanesense/AutoER/stargazers">
     <img src="https://img.shields.io/github/stars/zanesense/AutoER?color=22d3ee&style=for-the-badge" alt="GitHub Stars">
@@ -18,6 +19,10 @@
   </a>
 </p>
 
+<p align="center">
+  🎯 <a href="https://zanesense.github.io/AutoER/" target="_blank"><b>LIVE DEMO → AutoER</b></a>  
+</p>
+
 ---
 
 ## 🚀 Overview
@@ -25,7 +30,9 @@
 **AutoER** is a minimalist, AI-enhanced tool that converts **SQL DDL** statements into **Entity-Relationship Diagrams (ERDs)** instantly.  
 Whether you paste SQL, upload a `.sql` file, or describe your database in plain English — AutoER builds your ERD in seconds.
 
-No setup. No backend. 100% client-side and lightning fast ⚡
+No setup. No backend. 100% client-side and lightning fast ⚡  
+
+🎥 **[Try the Live Demo →](https://zanesense.github.io/AutoER/)**  
 
 ---
 
@@ -132,3 +139,5 @@ Built with ❤️ for developers, students, and database enthusiasts.
 ## 📜 License
 
 MIT License © 2025 — Feel free to fork, improve, and innovate!
+
+```
