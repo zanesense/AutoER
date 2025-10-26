@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL DDL to ERD Visualizer | Minimalist Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configure Tailwind for both Dark and Light Mode themes (Minimalist Aesthetic)
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        // Minimalist Dark Palette
+                        'bg-dark': '#0f172a',    // Slate-900
+                        'card-dark': '#1e293b',  // Slate-800
+                        'border-dark': '#334155',// Slate-700
+                        
+                        // Minimalist Light Palette
+                        'bg-light': '#f8fafc',   // Sky-50
+                        'card-light': '#ffffff', // White
+                        'border-light': '#e2e8f0',// Slate-200
+                        
+                        // Primary Accent (Modern Cyan/Teal)
+                        'accent-main': '#22d3ee', // Cyan-400
+                        'accent-hover': '#06b6d4',// Cyan-500
+                        
+                        // Status/Success Color (Green)
+                        'status-success': '#4ade80', // Green-400
+                        'status-error': '#f87171',   // Red-400
+                    },
+                },
+            },
+        }
+    </script>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        window.mermaid = mermaid; 
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.0/dist/html-to-image.min.js"></script>
+
+    <style>
+        /* Custom Styles for Theming and Zoom Fixes */
+        .dark {
+            background-color: #0f172a; /* bg-dark */
+            color: #f1f5f9; /* Slate-100 */
+        }
+        .light {
+            background-color: #f8fafc; /* bg-light */
+            color: #1e293b; /* Slate-800 */
+        }
+        
+        /* Fix for Mermaid rendering and Zoom */
+        #mermaid-output-container {
+            overflow: auto; /* Correct property for scrolling zoomed content */
+            padding: 1rem;
+        }
+
+        /* Ensure the mermaid div itself doesn't restrict space but acts as the transform origin */
+        #mermaid-output {
+            transform-origin: top left;
+            display: flex;
+            align-items: flex-start; /* Start content at the top */
+            justify-content: center;
+            min-height: 100%;
+            padding: 0; /* Remove internal padding */
+            transition: transform 0.2s ease-out; /* Smooth zoom transition */
+        }
+
+        /* Theming for the Switch */
+        #theme-toggle:checked + .slider {
+            background-color: #06b6d4; /* accent-hover */
+        }
+        #theme-toggle:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        
+        /* Custom scrollbar for dark mode */
+        .dark ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569; /* Slate-600 */
+            border-radius: 10px;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b; /* Slate-800 */
+        }
+    </style>
+</head>
+
+<body class="h-full font-sans antialiased transition-colors duration-300">
+
+    <div class="flex flex-col h-full">
+
+        <header class="shadow-xl sticky top-0 z-10 
+                       bg-card-dark border-b border-border-dark text-gray-100 dark:bg-card-dark dark:border-b dark:border-border-dark
+                       light:bg-card-light light:border-b light:border-border-light light:text-gray-800">
+            <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
+                
+                <h1 class="text-3xl font-extrabold text-accent-main flex items-center tracking-tight">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-2 text-accent-main" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="16 18 22 12 16 6"/>
+        <polyline points="8 6 2 12 8 18"/>
+        <line x1="12" y1="5" x2="12" y2="19"/>
+    </svg>
+                    Easy SQL to ERD Converter
+                </h1>
+
+                <div class="flex items-center space-x-6">
+                    
+                    <div class="flex space-x-4">
+                        <a href="https://github.com/your-username" target="_blank" class="text-gray-400 hover:text-accent-main transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.087-.731.084-.717.084-.717 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.304.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.231.957-.266 1.983-.399 3.003-.404 1.02.005 2.046.138 3.003.404 2.292-1.553 3.3-1.231 3.3-1.231.653 1.653.242 2.874.118 3.176.766.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.477 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.8.576C20.564 21.797 24 17.2 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                        </a>
+                        <a href="https://linkedin.com/in/your-username" target="_blank" class="text-gray-400 hover:text-accent-main transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.529-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        </a>
+                    </div>
+
+                    <label class="switch relative inline-block w-10 h-6">
+                        <input type="checkbox" id="theme-toggle" class="hidden">
+                        <span class="slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-600 rounded-full transition-all duration-300 before:absolute before:content-[''] before:h-5 before:w-5 before:left-0.5 before:bottom-0.5 before:bg-white before:rounded-full before:transition-all before:duration-300"></span>
+                    </label>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow p-6 grid md:grid-cols-2 gap-6 max-w-7xl mx-auto w-full">
+
+            <div class="flex flex-col space-y-4 h-full rounded-xl shadow-2xl border 
+                        bg-card-dark border-border-dark dark:bg-card-dark dark:border-border-dark 
+                        light:bg-card-light light:border-border-light p-6">
+                
+                <div class="flex flex-wrap gap-3 items-center border-b pb-3 border-border-dark light:border-border-light">
+                    <h2 class="text-xl font-bold text-gray-200 light:text-gray-700 flex-grow">SQL DDL Source</h2>
+                    
+                    <button id="generate-sql-btn" class="flex-shrink-0 bg-accent-main hover:bg-accent-hover text-gray-900 font-semibold py-2 px-4 rounded-full text-sm transition shadow-lg shadow-cyan-600/30 focus:outline-none focus:ring-4 focus:ring-cyan-500/50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.253l-4.135 2.617A1 1 0 014 17.069V7.93a1 1 0 011.678-.772l4.135 2.617m0 4.282V7.93m0 4.282l-4.135 2.617m4.135-2.617l4.135-2.617m0 4.282V7.93m0 4.282l4.135 2.617a1 1 0 001.678-.772V7.93a1 1 0 00-1.678-.772l-4.135 2.617"/></svg>
+                        Generate DDL (AI)
+                    </button>
+                    
+                    <button id="upload-sql-btn" class="flex-shrink-0 bg-gray-700 hover:bg-gray-600 text-gray-200 light:bg-gray-200 light:hover:bg-gray-300 light:text-gray-700 font-semibold py-2 px-4 rounded-full text-sm transition shadow-md focus:outline-none focus:ring-4 focus:ring-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                        Import .sql
+                    </button>
+                    <input type="file" id="sql-file-input" accept=".sql" class="hidden">
+                </div>
+
+                <textarea id="sql-input" 
+                    placeholder="Paste your SQL DDL (CREATE TABLE statements) here...&#10;The diagram updates instantly as you type."
+                    class="flex-grow p-4 text-sm font-mono rounded-lg shadow-inner resize-none 
+                    bg-gray-900 border border-gray-700 text-gray-50 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-50
+                    light:bg-gray-50 light:border-gray-300 light:text-gray-800
+                    focus:ring-2 focus:ring-accent-main focus:border-accent-main transition duration-150 ease-in-out"
+                    spellcheck="false"></textarea>
+            </div>
+
+            <div class="flex flex-col space-y-4 h-full">
+
+                <div class="flex-shrink-0 p-4 rounded-xl shadow-2xl border
+                            bg-card-dark border-border-dark dark:bg-card-dark dark:border-border-dark 
+                            light:bg-card-light light:border-border-light">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <h2 class="text-xl font-bold text-gray-200 light:text-gray-700">Entity-Relationship Diagram</h2>
+                        
+                        <div class="flex items-center gap-4">
+                            
+                            <div class="flex items-center space-x-2">
+                                <label for="theme-selector" class="text-sm font-medium text-gray-400 light:text-gray-600">ERD Theme:</label>
+                                <select id="theme-selector" class="p-2 rounded-lg text-sm 
+                                    bg-gray-900 border border-gray-700 text-gray-200 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-200
+                                    light:bg-gray-50 light:border-gray-300 light:text-gray-800
+                                    focus:ring-accent-main focus:border-accent-main">
+                                    <option value="dark">Dark</option>
+                                    <option value="default">Default</option>
+                                    <option value="forest">Forest</option>
+                                    <option value="neutral">Neutral</option>
+                                </select>
+                            </div>
+
+                            <div class="flex items-center space-x-2 w-36">
+                                <label for="zoom-slider" class="text-sm font-medium text-gray-400 light:text-gray-600 whitespace-nowrap" id="zoom-label">Zoom (100%):</label>
+                                <input type="range" id="zoom-slider" min="0.5" max="2.0" step="0.1" value="1.0" class="w-full h-2 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent-main 
+                                    bg-gray-700 dark:bg-gray-700 light:bg-gray-300">
+                            </div>
+
+                            <button id="download-png-btn" class="bg-status-success hover:bg-emerald-500 text-gray-900 font-semibold py-2 px-4 rounded-full text-sm transition shadow-md shadow-green-600/30 focus:outline-none focus:ring-4 focus:ring-status-success/50">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.882 1.956M12 10V4m0 6l3 3m-3-3l-3 3"/></svg>
+                                Export PNG
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="mermaid-output-container" 
+                     class="flex-grow relative border rounded-xl shadow-inner 
+                            bg-gray-900 border-gray-700 dark:bg-gray-900 dark:border-gray-700 
+                            light:bg-white light:border-gray-300">
+                    <div id="mermaid-output" class="mermaid">
+                        <p class="text-center text-gray-500 mt-20">Enter SQL DDL to generate your ER Diagram.</p>
+                    </div>
+                    <div id="error-message" class="hidden absolute inset-0 text-red-300 p-6 rounded-xl font-mono text-sm flex flex-col justify-center items-start backdrop-blur-sm 
+                                bg-red-900/40 dark:bg-red-900/40 light:bg-red-100/80 light:text-red-700">
+                        <strong class="block mb-2 text-xl font-bold text-red-100 dark:text-red-100 light:text-red-900">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline mr-2 -mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            Rendering Error!
+                        </strong>
+                        <pre class="whitespace-pre-wrap mt-2"></pre>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <footer class="p-3 text-center text-sm border-t shadow-inner 
+                       bg-card-dark border-border-dark text-gray-400 dark:bg-card-dark dark:border-border-dark dark:text-gray-400
+                       light:bg-card-light light:border-border-light light:text-gray-600">
+            Status: <span id="status-message" class="font-bold text-status-success">Ready</span> | Built with  &#10084;&#65039; by zanesense.
+        </footer>
+    </div>
+    
+    <div id="ai-modal" class="fixed inset-0 bg-gray-900 bg-opacity-80 hidden items-center justify-center z-50 transition-opacity duration-300">
+        <div class="rounded-xl shadow-2xl w-full max-w-lg p-6 transform transition-all duration-300 ease-out border 
+                    bg-card-dark border-border-dark dark:bg-card-dark dark:border-border-dark
+                    light:bg-card-light light:border-border-light">
+            <h3 class="text-2xl font-bold mb-4 text-accent-main border-b pb-2 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 10v4M19 10v4M3 10h2m14 0h2M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2zm0 14h10m-3-4h-4"/></svg>
+                AI DDL Generation
+            </h3>
+            
+            <div class="mb-4">
+                <label for="scenario-input" class="block text-sm font-medium text-gray-300 light:text-gray-700 mb-1">
+                    Describe the database requirements in detail:
+                </label>
+                <textarea id="scenario-input" rows="6" placeholder="Example: An inventory system with tables for products, suppliers, and warehouse locations. Products must link to one supplier and have a unique SKU."
+                          class="w-full p-3 text-sm rounded-lg shadow-inner resize-none 
+                          bg-gray-900 border border-gray-700 text-gray-50 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-50
+                          light:bg-gray-50 light:border-gray-300 light:text-gray-800
+                          focus:ring-accent-main focus:border-accent-main"></textarea>
+            </div>
+
+            <div class="flex justify-end space-x-3">
+                <button id="close-modal-btn" class="font-semibold py-2 px-4 rounded-full text-sm transition 
+                                                  bg-gray-700 hover:bg-gray-600 text-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200
+                                                  light:bg-gray-200 light:hover:bg-gray-300 light:text-gray-700">
+                    Cancel
+                </button>
+                <button id="submit-scenario-btn" class="bg-accent-main hover:bg-accent-hover text-gray-900 font-semibold py-2 px-4 rounded-full text-sm transition shadow-md shadow-cyan-600/30 focus:ring-4 focus:ring-accent-main/50">
+                    Generate DDL
+                </button>
+            </div>
+            <p id="ai-modal-status" class="mt-3 text-sm text-center font-medium hidden"></p>
+        </div>
+    </div>
+
+
+    <script type="module">
+        const mermaid = window.mermaid;
+
+        // 🛑 IMPORTANT: HARD-CODE YOUR GEMINI API KEY HERE 🛑
+        const GEMINI_API_KEY = 'AIzaSyA9Uqr8R_2J8rzhy6S_yvmL10l-f2oiARw'; // <-- PASTE YOUR KEY HERE (e.g., 'AIzaSy...v0bA')
+        
+        // --- Local Storage Keys & Constants ---
+        const DDL_STORAGE_KEY = 'sql_erd_generator_ddl';
+        const THEME_STORAGE_KEY = 'ui_theme';
+        
+        const DEFAULT_SQL_DDL = `
+-- Welcome! Paste your SQL DDL here or use the AI generator.
+
+CREATE TABLE Customers (
+    customer_id INT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE
+);
+
+CREATE TABLE Orders (
+    order_id INT PRIMARY KEY,
+    customer_id INT,
+    order_date DATE NOT NULL,
+    total_amount DECIMAL(10, 2),
+    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)
+);
+
+CREATE TABLE Products (
+    product_id INT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    price DECIMAL(8, 2) NOT NULL
+);
+`;
+
+        // --- DOM Elements ---
+        const htmlElement = document.documentElement;
+        const themeToggle = document.getElementById('theme-toggle');
+        const sqlInput = document.getElementById('sql-input');
+        const mermaidOutput = document.getElementById('mermaid-output');
+        const themeSelector = document.getElementById('theme-selector');
+        const zoomSlider = document.getElementById('zoom-slider');
+        const zoomLabel = document.getElementById('zoom-label');
+        const downloadPngBtn = document.getElementById('download-png-btn');
+        const errorMessage = document.getElementById('error-message');
+        const errorMessagePre = errorMessage.querySelector('pre');
+        const statusMessage = document.getElementById('status-message');
+        const generateSqlBtn = document.getElementById('generate-sql-btn');
+        const sqlFileInput = document.getElementById('sql-file-input');
+        const aiModal = document.getElementById('ai-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const submitScenarioBtn = document.getElementById('submit-scenario-btn');
+        const scenarioInput = document.getElementById('scenario-input');
+        const aiModalStatus = document.getElementById('ai-modal-status');
+
+
+        // --- Utility Functions ---
+        
+        const debounce = (func, delay) => {
+            let timeoutId;
+            return (...args) => {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => func.apply(this, args), delay);
+            };
+        };
+
+        const sqlToMermaidErd = (sqlDdl) => {
+            const lines = sqlDdl.toUpperCase().split(';').map(s => s.trim()).filter(s => s.startsWith('CREATE TABLE'));
+            let mermaidCode = 'erDiagram\n';
+            const relationships = [];
+
+            const tableRegex = /CREATE TABLE\s*(?:IF NOT EXISTS\s*)?([`"A-Z_0-9]+)/;
+            const columnRegex = /^\s*([`"A-Z_0-9]+)\s+([A-Z_0-9\(\),]+)(.*)$/;
+            const fkRegex = /FOREIGN KEY\s*\(([`"A-Z_0-9]+)\)\s*REFERENCES\s*([`"A-Z_0-9]+)\s*\(([`"A-Z_0-9]+)\)/;
+            const pkConstraintRegex = /PRIMARY KEY\s*\(([^)]+)\)/;
+
+            for (const statement of lines) {
+                if (!statement) continue;
+
+                const tableMatch = statement.match(tableRegex);
+                if (!tableMatch) continue;
+
+                const rawTableName = tableMatch[1].replace(/['"`]/g, '').replace(/[^a-zA-Z0-9_]/g, '_').trim();
+                const tableName = rawTableName;
+                const columns = [];
+                const pkColumns = new Set();
+                
+                const contentMatch = statement.match(/\(([\s\S]*)\)/);
+                if (!contentMatch) continue;
+
+                const columnDefinitions = contentMatch[1].split(',').map(s => s.trim()).filter(s => s.length > 0);
+
+                for (const colDef of columnDefinitions) {
+                    const fkMatch = colDef.match(fkRegex);
+                    const pkConstraintMatch = colDef.match(pkConstraintRegex);
+
+                    if (fkMatch) {
+                        const fkColumn = fkMatch[1].replace(/['"`]/g, '').replace(/[^a-zA-Z0-9_]/g, '_').trim();
+                        const refTable = fkMatch[2].replace(/['"`]/g, '').replace(/[^a-zA-Z0-9_]/g, '_').trim();
+                        relationships.push(`    ${tableName} ||--o{ ${refTable} : "${fkColumn}"`);
+                    } else if (pkConstraintMatch) {
+                        const pkCols = pkConstraintMatch[1].split(',').map(c => c.replace(/['"`]/g, '').replace(/[^a-zA-Z0-9_]/g, '_').trim());
+                        pkCols.forEach(col => pkColumns.add(col));
+                    } else {
+                        const colMatch = colDef.match(columnRegex);
+                        if (colMatch) {
+                            const rawColName = colMatch[1].replace(/['"`]/g, '').replace(/[^a-zA-Z0-9_]/g, '_').trim();
+                            const dataType = colMatch[2].replace(/\s+/g, ' '); 
+                            const constraints = colMatch[3].trim();
+                            let key = '';
+
+                            if (constraints.includes('PRIMARY KEY')) {
+                                key = 'PK';
+                                pkColumns.add(rawColName);
+                            } else if (constraints.includes('UNIQUE')) {
+                                key = 'UK';
+                            }
+                            
+                            if (!key && pkColumns.has(rawColName)) {
+                                key = 'PK';
+                            }
+
+                            columns.push(`    ${dataType} ${rawColName} ${key ? key : ''}`);
+                        }
+                    }
+                }
+                
+                mermaidCode += `\n    ${tableName} {\n`;
+                columns.forEach(col => {
+                    if (!col.includes('PK') && pkColumns.has(col.split(' ')[1])) {
+                        col += ' PK';
+                    }
+                    mermaidCode += `${col}\n`;
+                });
+                mermaidCode += '    }\n';
+            }
+
+            relationships.forEach(rel => {
+                mermaidCode += `${rel}\n`;
+            });
+
+            return mermaidCode;
+        };
+
+        // --- Core Rendering and Logic ---
+
+        const updateStatus = (message, type = 'ready') => {
+            statusMessage.textContent = message;
+            statusMessage.classList.remove('text-status-success', 'text-yellow-400', 'text-status-error');
+            if (type === 'loading') {
+                statusMessage.classList.add('text-yellow-400');
+            } else if (type === 'error') {
+                statusMessage.classList.add('text-status-error');
+            } else {
+                statusMessage.classList.add('text-status-success');
+            }
+        };
+
+        const renderDiagram = async () => {
+            const sqlDdl = sqlInput.value;
+            errorMessage.classList.add('hidden');
+            updateStatus('Parsing & Rendering...', 'loading');
+
+            if (!sqlDdl.trim()) {
+                mermaidOutput.innerHTML = '<p class="text-center text-gray-500 mt-20">Enter SQL DDL to generate your ER Diagram.</p>';
+                updateStatus('Ready');
+                return;
+            }
+
+            try {
+                const mermaidCode = sqlToMermaidErd(sqlDdl);
+                // Clear output container before rendering
+                mermaidOutput.innerHTML = ''; 
+                mermaidOutput.style.transform = 'scale(1.0)'; // Reset scale before rendering
+
+                // Re-initialize mermaid with the selected theme
+                mermaid.initialize({
+                    startOnLoad: false,
+                    theme: themeSelector.value,
+                    er: { layoutDirection: 'LR' } 
+                });
+
+                const { svg, bindFunctions } = await mermaid.render('mermaid-graph', mermaidCode);
+                mermaidOutput.innerHTML = svg;
+                if (bindFunctions) bindFunctions();
+
+                // Reapply stored zoom level after rendering
+                applyZoom(zoomSlider.value);
+
+                updateStatus('Render successful.');
+
+            } catch (error) {
+                console.error("Mermaid Rendering Error:", error);
+                mermaidOutput.innerHTML = ''; 
+                errorMessagePre.textContent = `Error Message: ${error.message}\n\nGenerated Mermaid Code (for debugging):\n${sqlToMermaidErd(sqlDdl)}`;
+                errorMessage.classList.remove('hidden');
+                updateStatus('Render failed (check error box).', 'error');
+            }
+        };
+
+        const debouncedRender = debounce(renderDiagram, 500);
+
+        const applyZoom = (scale) => {
+            // Apply scale directly to the mermaid output div
+            mermaidOutput.style.transform = `scale(${scale})`;
+            
+            const currentZoom = parseFloat(scale) * 100;
+            zoomLabel.textContent = `Zoom (${currentZoom.toFixed(0)}%):`;
+        };
+        
+        const setHtmlTheme = (theme) => {
+            if (theme === 'dark') {
+                htmlElement.classList.add('dark');
+                htmlElement.classList.remove('light');
+                themeToggle.checked = false; 
+            } else {
+                htmlElement.classList.add('light');
+                htmlElement.classList.remove('dark');
+                themeToggle.checked = true;
+            }
+            localStorage.setItem(THEME_STORAGE_KEY, theme);
+            
+            // Auto-select corresponding Mermaid theme
+            const currentMermaidTheme = themeSelector.value;
+            let newMermaidTheme = currentMermaidTheme;
+            
+            if (theme === 'dark' && currentMermaidTheme !== 'dark') {
+                newMermaidTheme = 'dark';
+            } else if (theme === 'light' && currentMermaidTheme === 'dark') {
+                newMermaidTheme = 'default';
+            }
+            
+            if (newMermaidTheme !== currentMermaidTheme) {
+                themeSelector.value = newMermaidTheme;
+                renderDiagram();
+            }
+        };
+
+
+        // --- Event Handlers ---
+
+        // 1. Theme Toggle
+        themeToggle.addEventListener('change', () => {
+            const newTheme = themeToggle.checked ? 'light' : 'dark';
+            setHtmlTheme(newTheme);
+        });
+
+        // 2. SQL Input Change
+        sqlInput.addEventListener('input', () => {
+            localStorage.setItem(DDL_STORAGE_KEY, sqlInput.value); 
+            debouncedRender();
+        });
+
+        // 3. Theme Change
+        themeSelector.addEventListener('change', renderDiagram);
+
+        // 4. Zoom Slider Change
+        zoomSlider.addEventListener('input', () => {
+            applyZoom(zoomSlider.value);
+        });
+        
+        // 5. Download PNG Button (Logic remains the same)
+        downloadPngBtn.addEventListener('click', () => {
+            updateStatus('Preparing download...', 'loading');
+            htmlToImage.toPng(document.getElementById('mermaid-output-container'), { 
+                backgroundColor: 'white',
+                style: { 
+                    transform: 'scale(1.0)', // Reset scale for the capture
+                    transformOrigin: 'top left' 
+                }
+            }) 
+            .then(function (dataUrl) {
+                const link = document.createElement('a');
+                link.download = 'sql-erd-diagram.png';
+                link.href = dataUrl;
+                link.click();
+                // Reapply zoom after capture
+                applyZoom(zoomSlider.value);
+                updateStatus('Download complete.');
+            })
+            .catch(function (error) {
+                console.error('Download error:', error);
+                // Reapply zoom in case of error
+                applyZoom(zoomSlider.value);
+                updateStatus('Download failed.', 'error');
+            });
+        });
+        
+        // 6. Upload .sql file (Logic remains the same)
+        document.getElementById('upload-sql-btn').addEventListener('click', () => sqlFileInput.click());
+
+        sqlFileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                sqlInput.value = e.target.result;
+                localStorage.setItem(DDL_STORAGE_KEY, sqlInput.value);
+                renderDiagram();
+            };
+            reader.readAsText(file);
+        });
+
+        // 7. AI Modal Handlers (Logic remains the same)
+        generateSqlBtn.addEventListener('click', () => {
+            aiModal.classList.remove('hidden');
+            aiModal.classList.add('flex');
+            scenarioInput.focus();
+            aiModalStatus.classList.add('hidden'); 
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            aiModal.classList.remove('flex');
+            aiModal.classList.add('hidden');
+        });
+
+        // 8. Core AI Generation Logic (Logic remains the same, using corrected JSON)
+        submitScenarioBtn.addEventListener('click', async () => {
+            const scenario = scenarioInput.value.trim();
+            
+            aiModalStatus.classList.remove('hidden');
+            aiModalStatus.classList.remove('text-status-success', 'text-gray-500');
+            aiModalStatus.classList.add('text-status-error');
+            
+            if (!scenario) {
+                aiModalStatus.textContent = 'Please enter a scenario description.';
+                return;
+            }
+
+            if (!GEMINI_API_KEY) {
+                aiModalStatus.textContent = '❌ API Key Missing: Please hard-code your key in the GEMINI_API_KEY constant.';
+                updateStatus('AI key missing.', 'error');
+                return;
+            }
+
+            aiModalStatus.textContent = '⏳ Calling Gemini API... (Requires local web server)';
+            updateStatus('Generating SQL (AI)...', 'loading');
+            
+            submitScenarioBtn.disabled = true;
+            submitScenarioBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            try {
+                const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+                
+                const prompt = `Generate a complete, standard SQL DDL schema (CREATE TABLE statements only) for the following database scenario. Include PRIMARY KEY and FOREIGN KEY constraints as separate lines or inline. Do not include any explanations, markdown code fences (\`\`\`), comments (--), or surrounding text, only the raw SQL DDL code. Scenario: ${scenario}`;
+
+                const response = await fetch(GEMINI_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ 
+                            parts: [{ 
+                                text: prompt 
+                            }]
+                        }],
+                        generationConfig: { 
+                            temperature: 0.2
+                        } 
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || data.error) {
+                    throw new Error(data.error?.message || `API Error: ${response.status} ${response.statusText}`);
+                }
+
+                const generatedSql = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (generatedSql) {
+                    const cleanedSql = generatedSql.replace(/```sql|```/gi, '').trim(); 
+                    
+                    sqlInput.value = cleanedSql;
+                    localStorage.setItem(DDL_STORAGE_KEY, cleanedSql);
+
+                    aiModalStatus.textContent = '✅ DDL successfully generated!';
+                    aiModalStatus.classList.remove('text-status-error');
+                    aiModalStatus.classList.add('text-status-success');
+                    
+                    renderDiagram();
+
+                    setTimeout(() => {
+                        aiModal.classList.remove('flex');
+                        aiModal.classList.add('hidden');
+                    }, 1500);
+
+                } else {
+                    throw new Error('No SQL DDL was generated. The model response was empty or malformed.');
+                }
+
+            } catch (err) {
+                console.error('AI Generation Failed:', err);
+                aiModalStatus.textContent = `❌ Generation Error: ${err.message || 'An unknown error occurred.'}`;
+                updateStatus('AI generation failed.', 'error');
+            } finally {
+                submitScenarioBtn.disabled = false;
+                submitScenarioBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        });
+
+
+        // --- Initialization ---
+
+        const initialize = () => {
+            // 1. Load Theme
+            const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || 'dark';
+            setHtmlTheme(savedTheme);
+
+            // 2. Load DDL
+            const savedDdl = localStorage.getItem(DDL_STORAGE_KEY);
+            sqlInput.value = savedDdl || DEFAULT_SQL_DDL;
+
+            // 3. Set Initial Mermaid Theme
+            themeSelector.value = (savedTheme === 'light' ? 'default' : 'dark');
+
+            // 4. Render
+            renderDiagram(); // This will call applyZoom after rendering
+        };
+
+        initialize();
+
+    </script>
+</body>
+</html>
